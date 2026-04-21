@@ -1,28 +1,58 @@
 #include <iostream>
+#include <vector>
+#include <algorithm>
+#include <map>
 
 using namespace std;
 
-int main() {
-    long long L, R;
-    if (!(cin >> L >> R)) return 0;
+string solve() {
+    int N;
+    cin >> N;
+    vector<int> A(N);
+    map<int, int> counts;
+    
+    for (int i = 0; i < N; i++) {
+        cin >> A[i];
+        counts[A[i]]++;
+    }
 
- 
-    long long odd_count;
-    long long total_elements = R - L + 1;
+    vector<int> unique_sugar;
+    for (auto const& [sugar, count] : counts) {
+        unique_sugar.push_back(sugar);
+    }
+    sort(unique_sugar.rbegin(), unique_sugar.rend());
 
-    if (L % 2 != 0) {
-       
-        odd_count = (total_elements + 1) / 2;
-    } else {
+    long long alex_total = 0;
+    long long bob_total = 0;
+    bool alex_turn = true;
+
+    for (int sugar : unique_sugar) {
+        int available = counts[sugar];
+        
       
-        odd_count = total_elements / 2;
+        if (available >= 2) {
+            alex_total += sugar;
+            bob_total += sugar;
+            
+        } else if (available == 1) {
+            if (alex_turn) {
+                alex_total += sugar;
+            } else {
+                bob_total += sugar;
+            }
+            alex_turn = !alex_turn; 
+        }
     }
 
-    if (odd_count % 2 == 0) {
-        cout << "even" << endl;
-    } else {
-        cout << "odd" << endl;
-    }
+    return (alex_total > bob_total) ? "Alex" : "Bob";
+}
 
+int main() {
+    int T;
+    cin >> T;
+    while (T--) {
+        cout << solve() << endl;
+    }
     return 0;
 }
+
